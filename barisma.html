@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merve Barışalım mı? 🥹</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Quicksand', sans-serif;
+    }
+    body, html {
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      background: url('blurred_background.jpg') no-repeat center center/cover;
+      filter: blur(0px);
+      position: relative;
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(5px);
+      z-index: 0;
+    }
+    .container {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 1;
+      text-align: center;
+      padding: 1rem;
+    }
+    h1, h2 {
+      color: white;
+      text-shadow: 0 0 10px rgba(0,0,0,0.7);
+    }
+    button {
+      margin: 1rem;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: 0.4s ease;
+      background-color: #ff4081;
+      color: white;
+    }
+    button:hover {
+      transform: scale(1.1);
+    }
+    .heart {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: red;
+      transform: rotate(45deg);
+      animation: float 5s infinite ease-in;
+    }
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: red;
+      border-radius: 50%;
+    }
+    .heart::before { top: -7.5px; left: 0; }
+    .heart::after { left: -7.5px; top: 0; }
+    @keyframes float {
+      0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(-200px) rotate(45deg); opacity: 0; }
+    }
+    .page {
+      display: none;
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .active {
+      display: flex !important;
+    }
+    .child-img {
+      width: 150px;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="container">
+    <!-- Sayfa 1 -->
+    <div class="page active" id="page1">
+      <h1>Merve barışalım mı? 🥹</h1>
+      <div>
+        <button onclick="nextPage('page2')">Evet</button>
+        <button id="no1" onclick="handleNo1(event)">Hayır</button>
+      </div>
+    </div>
+
+    <!-- Sayfa 2 -->
+    <div class="page" id="page2">
+      <h1>Bence barışmalıyız</h1>
+      <div>
+        <button onclick="nextPage('page3')" id="yes2" style="display:none">Evet</button>
+        <button id="no2" onclick="handleNo2()">Hayır</button>
+      </div>
+    </div>
+
+    <!-- Sayfa 3 -->
+    <div class="page" id="page3">
+      <img src="IMG_3125.png" class="child-img">
+      <h2>Duru'nun hatrına da mı barışmayız?</h2>
+      <div>
+        <button onclick="celebrate()" id="yes3">Evet</button>
+        <button id="no3" onclick="showBoy()">Hayır</button>
+      </div>
+    </div>
+
+    <!-- Sayfa 4 -->
+    <div class="page" id="page4">
+      <img src="IMG_3151.jpeg" class="child-img">
+      <h2>Duru'nun yoksa bunun hatrı vardır :)</h2>
+      <div>
+        <button onclick="celebrate()" id="yes4">Evet</button>
+        <button id="no4" onclick="finalNo()">Hayır</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kalpler -->
+  <script>
+    for (let i = 0; i < 20; i++) {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * 100 + "%";
+      heart.style.top = Math.random() * 100 + "%";
+      document.body.appendChild(heart);
+    }
+
+    let noCount = 0;
+
+    function handleNo1(e) {
+      noCount++;
+      const btn = e.target;
+      if (noCount < 3) {
+        btn.style.position = 'absolute';
+        btn.style.left = Math.random() * 80 + '%';
+        btn.style.top = Math.random() * 80 + '%';
+      } else {
+        nextPage('page2');
+      }
+    }
+
+    function handleNo2() {
+      const noBtn = document.getElementById('no2');
+      noBtn.style.transition = 'all 0.5s ease';
+      noBtn.style.transform = 'scale(0)';
+      setTimeout(() => {
+        noBtn.style.display = 'none';
+        document.getElementById('yes2').style.display = 'inline-block';
+      }, 500);
+    }
+
+    function showBoy() {
+      nextPage('page4');
+    }
+
+    function finalNo() {
+      const btn = document.getElementById('no4');
+      btn.innerText = 'Hayırlısıyla barıştık';
+      btn.onclick = celebrate;
+    }
+
+    function nextPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function celebrate() {
+      const audio = new Audio('celebration.mp3');
+      audio.play();
+      confettiEffect();
+      setTimeout(() => {
+        window.location.href = 'https://open.spotify.com/intl-tr/track/7bQs0QDP7Su8mI35XPBUVW?si=0f26c96f738349d9';
+      }, 4000);
+    }
+
+    function confettiEffect() {
+      const duration = 3 * 1000;
+      const animationEnd = Date.now() + duration;
+      const colors = ['#bb0000', '#ffffff'];
+      (function frame() {
+        const timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) return;
+        const particle = document.createElement('div');
+        particle.className = 'heart';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = '100%';
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 3000);
+        requestAnimationFrame(frame);
+      })();
+    }
+  </script>
+</body>
+</html>
